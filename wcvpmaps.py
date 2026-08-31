@@ -65,7 +65,7 @@ def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_brea
         custom_breaks (list, optional): List of ten breakpoints to use instead of natural breaks plus zero. Defaults to None.
     """
     # Get list of accepted species in family
-    species = df.loc[(df['family']==family) & (df['taxon_status']=="Accepted")]
+    species = df.loc[(df['family']==family) & (df['taxon_status']=="Accepted") & (df['taxon_rank']=="Species")]
     # Most common climate description for this family
     modal_climate = species.climate_description.mode()[0]
     print(f"Most common climate for {family}: {modal_climate}")
