@@ -1,0 +1,8 @@
+*.svg
+*.zip
+*.csv
+*.geojson
+data/*
+POWO/*
+*.pyc
+wcvp/*
