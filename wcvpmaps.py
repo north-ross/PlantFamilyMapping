@@ -52,7 +52,7 @@ df = pd.read_csv("data/wcvp_names.csv", sep="|")
 # WCVP dataframe of plant distributions
 ddf = pd.read_csv("data/wcvp_distribution.csv", sep="|")
 
-def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_breaks=None):
+def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_breaks=None, custom_labels=None):
     """Creates a map of species richness by botanical country for the given plant family. 
         By default uses natural breaks, but custom breaks (ten) can be supplied as well
 
@@ -62,7 +62,8 @@ def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_brea
         ddf (pandas.DataFrame, optional): Pandas dataframe of plant distributions, from WCVP
         world (geopandas.GeoDataFrame, optional): GeoDataFrame of botanical countries
         nbreaks (int, optional): number of breaks for the legend
-        custom_breaks (list, optional): List of ten breakpoints to use instead of natural breaks plus zero. Defaults to None.
+        custom_breaks (list, optional): List of n breakpoints to use instead of natural breaks plus zero. Defaults to None.
+        custom_labels (list, optional): List of strings to use as custom labels in the legend. 
     """
     # Get list of accepted species in family
     species = df.loc[(df['family']==family) & (df['taxon_status']=="Accepted") & (df['taxon_rank']=="Species")]
@@ -93,6 +94,12 @@ def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_brea
         # Then create custom ones by adding zero at the start
         custom_breaks = np.insert(natural.bins, 0, 0.6)
 
+    if not custom_labels:
+        # Make some nice looking labels based on the breaks if not specified
+        custom_labels = ["0", f"1 - {custom_breaks[1]}"]
+        for i in range(2, len(custom_breaks)):
+            custom_labels.append(f"{custom_breaks[i-1]+1} - {custom_breaks[i]}")
+
     # Use Cartopy to avoid antimeridian issues
     fig, ax = plt.subplots(figsize=(10, 7),subplot_kw={'projection': ccrs.Robinson()})
     ax = srworld.plot(
@@ -107,6 +114,7 @@ def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_brea
         legend_kwds={
             "title": f"{family}\nSpecies Richness", 
             "bbox_to_anchor":(-0.3, 0., 0.55, 0.6), 
+            "labels": custom_labels,
             "fmt": '{:.0f}'}
     )
 
