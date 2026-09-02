@@ -96,9 +96,9 @@ def SRMapFromFamily(family, df=df, ddf=ddf, world=world, nbreaks=10, custom_brea
 
     if not custom_labels:
         # Make some nice looking labels based on the breaks if not specified
-        custom_labels = ["0", f"1 - {custom_breaks[1]}"]
+        custom_labels = ["0", "1 - {:.0f}".format(custom_breaks[1])]
         for i in range(2, len(custom_breaks)):
-            custom_labels.append(f"{custom_breaks[i-1]+1} - {custom_breaks[i]}")
+            custom_labels.append("{:.0f} - {:.0f}".format(custom_breaks[i-1]+1, custom_breaks[i]))
 
     # Use Cartopy to avoid antimeridian issues
     fig, ax = plt.subplots(figsize=(10, 7),subplot_kw={'projection': ccrs.Robinson()})
